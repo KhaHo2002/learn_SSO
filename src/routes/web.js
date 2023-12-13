@@ -68,7 +68,6 @@ const initWebRoutes = (app) => {
         passport.authenticate('facebook', { failureRedirect: '/login' }),
         function (req, res) {
             // Successful authentication, redirect home.
-            console.log(req.user.code);
             return res.render('social.ejs', { ssoToken: req.user.code });
         });
 
