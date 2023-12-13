@@ -15,7 +15,8 @@ const configSession = (app) => {
         logging: false,
         define: {
             freezeTableName: true
-        }
+        },
+        timezone: "+07:00"
     });
 
     // configure express
@@ -28,7 +29,9 @@ const configSession = (app) => {
             store: myStore,
             resave: false, // we support the touch method so per the express-session docs this should be set to false
             proxy: true, // if you do SSL outside of node.
-            saveUninitialized: false
+            saveUninitialized: false,
+            expiration: 30 * 1000,
+            cookie: { expires: 30 * 1000 }
         })
     );
     myStore.sync();

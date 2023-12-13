@@ -13,25 +13,25 @@ const createNewRoles = async (roles) => {
         );
         if (persists.length === 0) {
             return {
-                EM: 'Nothing to create ...',
-                EC: 0,
-                DT: []
+                status: 'Nothing to create ...',
+                errorCode: 0,
+                data: []
             }
         }
 
         await db.Role.bulkCreate(persists);
         return {
-            EM: `Create roles succeeds:  ${persists.length} roles...`,
-            EC: 0,
-            DT: []
+            status: `Create roles succeeds:  ${persists.length} roles...`,
+            errorCode: 0,
+            data: []
         }
 
     } catch (error) {
         console.log(error)
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -42,17 +42,17 @@ const getAllRoles = async () => {
             order: [['id', 'DESC']]
         })
         return {
-            EM: `Get all Roles succeeds`,
-            EC: 0,
-            DT: data
+            status: `Get all Roles succeeds`,
+            errorCode: 0,
+            data: data
         }
 
     } catch (error) {
         console.log(error)
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -67,17 +67,17 @@ const deleteRole = async (id) => {
         }
 
         return {
-            EM: `Delete Roles succeeds`,
-            EC: 0,
-            DT: []
+            status: `Delete Roles succeeds`,
+            errorCode: 0,
+            data: []
         }
 
     } catch (error) {
         console.log(error)
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -86,9 +86,9 @@ const getRoleByGroup = async (id) => {
     try {
         if (!id) {
             return {
-                EM: `Not found any roles`,
-                EC: 0,
-                DT: []
+                status: `Not found any roles`,
+                errorCode: 0,
+                data: []
             }
         }
 
@@ -103,17 +103,17 @@ const getRoleByGroup = async (id) => {
         })
 
         return {
-            EM: `get Roles by group succeeds`,
-            EC: 0,
-            DT: roles
+            status: `get Roles by group succeeds`,
+            errorCode: 0,
+            data: roles
         }
 
     } catch (error) {
         console.log(error)
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -126,17 +126,17 @@ const assignRoleToGroup = async (data) => {
         })
         await db.Group_Role.bulkCreate(data.groupRoles);
         return {
-            EM: `Assign Role to Group succeeds`,
-            EC: 0,
-            DT: []
+            status: `Assign Role to Group succeeds`,
+            errorCode: 0,
+            data: []
         }
 
     } catch (error) {
         console.log(error)
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }

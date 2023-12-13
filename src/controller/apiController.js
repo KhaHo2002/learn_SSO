@@ -1,4 +1,5 @@
 import loginRegisterService from '../service/loginRegisterService';
+require("dotenv").config();
 
 const testApi = (req, res) => {
     return res.status(200).json({
@@ -12,16 +13,16 @@ const handleRegister = async (req, res) => {
         //req.body:  email, phone, username, password
         if (!req.body.email || !req.body.phone || !req.body.password) {
             return res.status(200).json({
-                EM: 'Missing required parameters', // error message
-                EC: '1', //error code
-                DT: '', //date
+                status: 'Missing required parameters', // error message
+                errorCode: '1', //error code
+                data: '', //date
             })
         }
         if (req.body.password && req.body.password.length < 4) {
             return res.status(200).json({
-                EM: 'Your password must have more than 3 letters', // error message
-                EC: '1', //error code
-                DT: '', //date
+                status: 'Your password must have more than 3 letters', // error message
+                errorCode: '1', //error code
+                data: '', //date
             })
         }
 
@@ -29,16 +30,16 @@ const handleRegister = async (req, res) => {
         let data = await loginRegisterService.registerNewUser(req.body)
 
         return res.status(200).json({
-            EM: data.EM,
-            EC: data.EC, //error code
-            DT: '', //date
+            status: data.status,
+            status: data.errorCode, //error code
+            data: '', //date
         })
 
     } catch (e) {
         return res.status(500).json({
-            EM: 'error from server', // error message
-            EC: '-1', //error code
-            DT: '', //date
+            status: 'error from server', // error message
+            errorCode: '-1', //error code
+            data: '', //date
         })
     }
 }
@@ -48,41 +49,42 @@ const handleLogin = async (req, res) => {
 
         let data = await loginRegisterService.handleUserLogin(req.body);
         //set cookie
-        if (data && data.DT && data.DT.access_token) {
-            res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
+        if (data && data.data && data.data.access_token) {
+            res.cookie("jwt", data.data.access_token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
         }
 
         return res.status(200).json({
-            EM: data.EM, // error message
-            EC: data.EC, //error code
-            DT: data.DT, //data
+            status: data.status, // error message
+            errorCode: data.errorCode, //error code
+            data: data.data, //data
         })
 
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            EM: 'error from server', // error message
-            EC: '-1', //error code
-            DT: '', //date
+            status: 'error from server', // error message
+            errorCode: '-1', //error code
+            data: '', //date
         })
     }
 }
 
 const handleLogout = (req, res) => {
     try {
-        res.clearCookie("jwt");
+        res.clearCookie("access_token", { domain: process.env.COOKIE_DOMAIN, path: '/' });
+        res.clearCookie("refresh_token", { domain: process.env.COOKIE_DOMAIN, path: '/' });
         return res.status(200).json({
-            EM: 'clear cookies done!', // error message
-            EC: 0, //error code
-            DT: '', //data
+            status: 'clear cookies done!', // error message
+            errorCode: 0, //error code
+            data: {}, //data
         })
 
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            EM: 'error from server', // error message
-            EC: '-1', //error code
-            DT: '', //date
+            status: 'error from server', // error message
+            errorCode: '-1', //error code
+            data: '', //date
         })
     }
 }

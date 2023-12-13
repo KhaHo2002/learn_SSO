@@ -9,24 +9,24 @@ const getAllUser = async () => {
         });
         if (users) {
             return {
-                EM: 'get data success',
-                EC: 0,
-                DT: users
+                status: 'get data success',
+                errorCode: 0,
+                data: users
             }
         } else {
             return {
-                EM: 'get data success',
-                EC: 0,
-                DT: []
+                status: 'get data success',
+                errorCode: 0,
+                data: []
             }
         }
 
     } catch (e) {
         console.log(e);
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -51,17 +51,17 @@ const getUserWithPagination = async (page, limit) => {
         }
 
         return {
-            EM: 'fetch ok',
-            EC: 0,
-            DT: data
+            status: 'fetch ok',
+            errorCode: 0,
+            data: data
         }
 
     } catch (e) {
         console.log(e);
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -72,17 +72,17 @@ const createNewUser = async (data) => {
         let isEmailExist = await checkEmailExist(data.email);
         if (isEmailExist === true) {
             return {
-                EM: 'The email is already exist',
-                EC: 1,
-                DT: 'email'
+                status: 'The email is already exist',
+                errorCode: 1,
+                data: 'email'
             }
         }
         let isPhoneExist = await checkPhoneExist(data.phone);
         if (isPhoneExist === true) {
             return {
-                EM: 'The phone number is already exist',
-                EC: 1,
-                DT: 'phone'
+                status: 'The phone number is already exist',
+                errorCode: 1,
+                data: 'phone'
             }
         }
         //hash user password
@@ -91,16 +91,16 @@ const createNewUser = async (data) => {
         //hash user password
         await db.User.create({ ...data, password: hashPassword });
         return {
-            EM: 'create ok',
-            EC: 0,
-            DT: []
+            status: 'create ok',
+            errorCode: 0,
+            data: []
         }
     } catch (e) {
         console.log(e);
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -109,9 +109,9 @@ const updateUser = async (data) => {
     try {
         if (!data.groupId) {
             return {
-                EM: 'Error with empty GroupId',
-                EC: 1,
-                DT: 'group'
+                status: 'Error with empty GroupId',
+                errorCode: 1,
+                data: 'group'
             }
         }
         let user = await db.User.findOne({
@@ -128,24 +128,24 @@ const updateUser = async (data) => {
             })
 
             return {
-                EM: 'Update user succeeds',
-                EC: 0,
-                DT: ''
+                status: 'Update user succeeds',
+                errorCode: 0,
+                data: ''
             }
         } else {
             //not found
             return {
-                EM: 'User not found',
-                EC: 2,
-                DT: ''
+                status: 'User not found',
+                errorCode: 2,
+                data: ''
             }
         }
     } catch (e) {
         console.log(e);
         return {
-            EM: 'something wrongs with servies',
-            EC: 1,
-            DT: []
+            status: 'something wrongs with servies',
+            errorCode: 1,
+            data: []
         }
     }
 }
@@ -158,24 +158,24 @@ const deleteUser = async (id) => {
         if (user) {
             await user.destroy();
             return {
-                EM: 'Delete user succeeds',
-                EC: 0,
-                DT: []
+                status: 'Delete user succeeds',
+                errorCode: 0,
+                data: []
             }
         } else {
             return {
-                EM: 'User not exist',
-                EC: 2,
-                DT: []
+                status: 'User not exist',
+                errorCode: 2,
+                data: []
             }
         }
 
     } catch (e) {
         console.log(e);
         return {
-            EM: 'error from service',
-            EC: 1,
-            DT: []
+            status: 'error from service',
+            errorCode: 1,
+            data: []
         }
 
     }

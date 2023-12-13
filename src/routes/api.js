@@ -19,7 +19,9 @@ const initApiRoutes = (app) => {
     //rest api
     //GET - R, POST- C, PUT - U, DELETE - D
 
+    // router.all này là dùng cho tất cả các router còn lại
     router.all('*', checkUserJWT, checkUserPermission);
+
     router.post("/register", apiController.handleRegister);
     router.post("/login", apiController.handleLogin);
     router.post("/logout", apiController.handleLogout);

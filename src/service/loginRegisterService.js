@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize';
 import { getGroupWithRoles } from './JWTService';
 import { createJWT } from '../middleware/JWTAction';
+import { v4 as uuidv4 } from 'uuid';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -40,15 +41,15 @@ const registerNewUser = async (rawUserData) => {
         let isEmailExist = await checkEmailExist(rawUserData.email);
         if (isEmailExist === true) {
             return {
-                EM: 'The email is already exist',
-                EC: 1
+                status: 'The email is already exist',
+                errorCode: 1
             }
         }
         let isPhoneExist = await checkPhoneExist(rawUserData.phone);
         if (isPhoneExist === true) {
             return {
-                EM: 'The phone number is already exist',
-                EC: 1
+                status: 'The phone number is already exist',
+                errorCode: 1
             }
         }
         //hash user password
@@ -64,15 +65,15 @@ const registerNewUser = async (rawUserData) => {
         })
 
         return {
-            EM: 'A user is created successfully!',
-            EC: '0'
+            status: 'A user is created successfully!',
+            errorCode: '0'
         }
 
     } catch (e) {
         console.log(e)
         return {
-            EM: 'Somthing wrongs in service...',
-            EC: -2
+            status: 'Somthing wrongs in service...',
+            errorCode: -2
         }
     }
 }
@@ -95,19 +96,20 @@ const handleUserLogin = async (rawData) => {
         if (user) {
             let isCorrectPassword = checkPassword(rawData.password, user.password);
             if (isCorrectPassword === true) {
+                const code = uuidv4();
                 let groupWithRoles = await getGroupWithRoles(user);
-                let payload = {
-                    email: user.email,
-                    groupWithRoles,
-                    username: user.username,
-                }
-                let token = createJWT(payload);
+                // let payload = {
+                //     email: user.email,
+                //     groupWithRoles,
+                //     username: user.username
+                // }
+                // let token = createJWT(payload);
                 return {
-                    EM: 'ok!',
-                    EC: 0,
-                    DT: {
-                        access_token: token,
-                        groupWithRoles,
+                    status: 'ok!',
+                    errorCode: 0,
+                    data: {
+                        code: code,
+                        groupWithRoles: groupWithRoles,
                         email: user.email,
                         username: user.username
                     }
@@ -115,23 +117,61 @@ const handleUserLogin = async (rawData) => {
             }
         }
 
-
         return {
-            EM: 'Your email/phone number or password is incorrect!',
-            EC: 1,
-            DT: ''
+            status: 'Your email/phone number or password is incorrect!',
+            errorCode: 1,
+            data: ''
         }
 
 
     } catch (error) {
         console.log(error)
         return {
-            EM: 'Somthing wrongs in service...',
-            EC: -2
+            status: 'Somthing wrongs in service...',
+            errorCode: -2
+        }
+    }
+}
+
+const updateUserRefreshToken = async (email, token) => {
+    // return;
+    try {
+        let user = await db.User.update(
+            { refreshToken: token },
+            { where: { email: email } }
+        )
+    } catch (error) {
+        throw error;
+    }
+}
+
+const upsertUserGoogleOrFacebook = async (typeAcc, data) => {
+    try {
+        let user = await db.User.findOne({
+            where: {
+                email: data.email,
+                typelogin: typeAcc
+            },
+            raw: true
+        });
+        if (!user) {
+            await db.User.create({
+                username: data.username,
+                email: data.email,
+                typelogin: typeAcc
+            })
+        }
+        else {
+            return user;
+        }
+    } catch (error) {
+        return {
+            status: 'Somthing wrongs in service...',
+            errorCode: -2
         }
     }
 }
 
 module.exports = {
-    registerNewUser, handleUserLogin, hashUserPassword, checkEmailExist, checkPhoneExist
+    registerNewUser, handleUserLogin, hashUserPassword, checkEmailExist, checkPhoneExist, updateUserRefreshToken, upsertUserGoogleOrFacebook
 }

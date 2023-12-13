@@ -11,6 +11,9 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
+      typelogin: {
+        type: Sequelize.STRING,
+      },
       password: {
         type: Sequelize.STRING
       },
@@ -29,7 +32,9 @@ module.exports = {
       groupId: {
         type: Sequelize.INTEGER
       },
-
+      refreshToken: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -6,16 +6,16 @@ const getGroups = async () => {
             order: [['name', 'ASC']]
         });
         return {
-            EM: 'Get groups success',
-            EC: 0,
-            DT: data
+            status: 'Get groups success',
+            errorCode: 0,
+            data: data
         }
     } catch (error) {
         console.log(error);
         return {
-            EM: 'error from service',
-            EC: 1,
-            DT: []
+            status: 'error from service',
+            errorCode: 1,
+            data: []
         }
     }
 }

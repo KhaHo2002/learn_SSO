@@ -8,12 +8,16 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { configPassPort } from './controller/passportController';
 import connectDB from './config/connectDB';
-
+import flash from 'connect-flash';
+import loginWithGoogle from "./controller/social/googleController";
+import loginWithFacebook from "./controller/social/facebookController";
 import configSession from './config/session';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+//config flash
+app.use(flash());
 //config cors
 configCors(app);
 connectDB()
@@ -44,7 +48,8 @@ app.use((req, res) => {
 //use passport
 
 configPassPort();
-
+loginWithGoogle();
+loginWithFacebook();
 
 app.listen(PORT, () => {
     console.log(">>> JWT Backend is running on the port = " + PORT);

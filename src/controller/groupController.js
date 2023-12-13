@@ -4,16 +4,16 @@ const readFunc = async (req, res) => {
     try {
         let data = await groupService.getGroups();
         return res.status(200).json({
-            EM: data.EM, // error message
-            EC: data.EC, //error code
-            DT: data.DT, //data
+            status: data.status, // error message
+            errorCode: data.errorCode, //error code
+            data: data.data, //data
         })
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            EM: 'error from server', // error message
-            EC: '-1', //error code
-            DT: '', //date
+            status: 'error from server', // error message
+            errorCode: '-1', //error code
+            data: '', //date
         })
     }
 }
